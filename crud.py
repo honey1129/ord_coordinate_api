@@ -4,9 +4,11 @@ from sqlalchemy.orm import Session
 def get_all_coordinates_info(db: Session, offset: int, limit: int):
     sql_str = f'''
         SELECT
-          * 
+            * 
         FROM
             ordcoordinates 
+        ORDER BY
+        TIMESTAMP DESC
         LIMIT {limit} OFFSET {offset}
     '''
     return {'data': [dict(item._mapping) for item in db.execute(sql_str).all()]}
