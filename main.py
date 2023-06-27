@@ -6,6 +6,7 @@ import schemas
 from sqlalchemy.orm import Session
 from database import engine, Base, SessionLocal
 import crud
+import requests
 
 app = FastAPI(title="Ord Coordinate Api Docs",
               description="Ord Coordinate API 接口文档",
@@ -33,11 +34,6 @@ def get_db():
         db.close()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
 @app.get("/ord-coordinate-api/coordinates-info", response_model=schemas.CoordinatesInfoResponse)
 async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
                                coordinate: Union[str, None] = Query(default=None),
@@ -59,5 +55,87 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
     return {
         "massage": "Get Coordinates Datas Success!",
         "code": 200,
+        "totalRecords":sat_data.get('total_records'),
         "data": total_data_list,
     }
+
+
+@app.post("/ord-coordinate-api/calculate_text", response_model=schemas.CalculateTextResponse)
+async def calculate_text(request: Request, item: schemas.CalculateTextPost):
+    post_data = {
+        "content": item.content,
+        "type": "common-text"
+    }
+    res = requests.post("https://api.idclub.io//inscribe/calculateText", data=json.dumps(post_data),
+                        headers={'Content-Type': 'application/json'})
+    if res.status_code == 200 and res:
+        res_json = res.json()
+        if res_json.get('code') == 0 and res_json.get("msg") == "ok":
+            return {
+                "code": 0,
+                "msg": "ok",
+                "data": {
+                    "fname": res_json.get("data").get("fname"),
+                    "fsize": res_json.get("data").get("fsize")
+                }
+            }
+        else:
+            return {
+                "code": 500,
+                "msg": "error",
+                "data": None
+            }
+    else:
+        return {
+            "code": 500,
+            "msg": "error",
+            "data": None
+        }
+
+
+@app.post("/ord-coordinate-api/create-order", response_model=schemas.CreateOrderResponse)
+async def create_order(request: Request, item: schemas.OrderPost, db: Session = Depends(get_db)):
+    post_data = {
+        "bc1": item.bc1,
+        "feerate": item.feerate,
+        "fnameList": item.fnameList,
+        "sender": "bitcat",
+        "type": "common-text",
+        "payType": "bitcoin",
+        "postage": 546,
+        "mintFee": 5000
+    }
+
+    res = requests.post("https://api.idclub.io/inscribe/createSimple", data=json.dumps(post_data),
+                        headers={'Content-Type': 'application/json'})
+    if res.status_code == 200 and res:
+        res_json = res.json()
+        if res_json.get('code') == 0 and res_json.get("msg") == "ok":
+            assert crud.create_order_history_data(db=db, order_id=res_json.get("data").get("orderId"),
+                                                  sender_address=item.bc1,
+                                                  fund_address=res_json.get("data").get("fundAddress"), btc_price=str(
+                    res_json.get("data").get("inscribeCalculate").get("btcPrice")))
+            return {
+                "code": 0,
+                "msg": "ok",
+                "data": {
+                    "orderId": res_json.get("data").get("orderId"),
+                    "fundAddress": res_json.get("data").get("fundAddress"),
+                    "btcPrice": res_json.get("data").get("inscribeCalculate").get("btcPrice")
+                }
+            }
+
+
+
+        else:
+            return {
+                "code": 500,
+                "msg": "error",
+                "data": None
+            }
+    else:
+        return {
+            "code": 500,
+            "msg": "error",
+            "data": None
+        }
