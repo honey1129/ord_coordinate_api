@@ -146,3 +146,26 @@ class CreateOrderResponse(BaseModel):
                 }
             }
         }
+
+
+class ValidCoordinatesItem(BaseModel):
+    valid_coordinate: str
+
+
+class ValidCoordinatesResponse(BaseModel):
+    code: int
+    msg: str
+    data: Union[List[ValidCoordinatesItem], None] = None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "code": 0,
+                "msg": "ok",
+                "data": [
+                    {
+                        "valid_coordinate": "(0,2)"
+                    }
+                ]
+            }
+        }

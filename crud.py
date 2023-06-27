@@ -20,11 +20,22 @@ def get_all_coordinates_info(db: Session, offset: int, limit: int):
             ordcoordinates 
         ORDER BY
         TIMESTAMP DESC
-        LIMIT {limit} OFFSET {offset}
                 '''
     total_records = [dict(item._mapping) for item in db.execute(total_records_sql_str).all()][0]['total_records']
     return {'data': [dict(item._mapping) for item in db.execute(sql_str).all()], 'total_records': total_records}
 
+
+def get_all_coordinates_info_no_limit(db: Session):
+    sql_str = f'''
+        SELECT
+            * 
+        FROM
+            ordcoordinates 
+        ORDER BY
+        TIMESTAMP DESC
+    '''
+
+    return {'data': [dict(item._mapping) for item in db.execute(sql_str).all()]}
 
 def get_coordinates_info_by_sats(db: Session, sats: int):
     sql_str = f'''

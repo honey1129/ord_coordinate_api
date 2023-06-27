@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Query, Depends, HTTPException, Request
 import schemas
 from sqlalchemy.orm import Session
+
+import utils
 from database import engine, Base, SessionLocal
 import crud
 import requests
@@ -55,7 +57,7 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
     return {
         "massage": "Get Coordinates Datas Success!",
         "code": 200,
-        "totalRecords":sat_data.get('total_records'),
+        "totalRecords": sat_data.get('total_records'),
         "data": total_data_list,
     }
 
@@ -139,3 +141,31 @@ async def create_order(request: Request, item: schemas.OrderPost, db: Session = 
             "msg": "error",
             "data": None
         }
+
+
+@app.get("/ord-coordinate-api/valid-coordinates", response_model=schemas.ValidCoordinatesResponse)
+async def get_valid_coordinates(request: Request,
+                                coordinate_x_min: int,
+                                coordinate_x_max: int,
+                                coordinate_y_min: int,
+                                coordinate_y_max: int,
+                                db: Session = Depends(get_db)):
+    all_coordinates_str = []
+    for i in range(coordinate_x_min, coordinate_x_max + 1):
+        for y in range(coordinate_y_min, coordinate_y_max + 1):
+            coordinate = (i, y)
+            coordinate_str = str(tuple(coordinate))
+            all_coordinates_str.append(coordinate_str)
+    all_db_coordinates_str = []
+    all_coordinates_data_list = crud.get_all_coordinates_info_no_limit(db=db)
+    for i in all_coordinates_data_list['data']:
+        a = i['Coordinates'][1:-1].split(',')
+        i['Coordinates'] = str(tuple([int(x) for x in a]))
+        all_db_coordinates_str.append(i['Coordinates'])
+    all_none_coordinates_data_list = utils.array_diff(all_coordinates_str, all_db_coordinates_str)
+    valid_coordinate_response_list = [{"valid_coordinate": x} for x in all_none_coordinates_data_list]
+    return {
+        "code": 0,
+        "msg": "ok",
+        "data": valid_coordinate_response_list
+    }
