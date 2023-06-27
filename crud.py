@@ -24,3 +24,14 @@ def get_coordinates_info_by_sats(db: Session, sats: int):
                 sats = {sats} 
         '''
     return {'data': [dict(item._mapping) for item in db.execute(sql_str).all()]}
+
+def get_coordinates_info_by_coordinate(db: Session, coordinate: str):
+    sql_str = f'''
+                SELECT
+                  * 
+                FROM
+                    ordcoordinates 
+                WHERE
+                    coordinates = "{coordinate}" 
+            '''
+    return {'data': [dict(item._mapping) for item in db.execute(sql_str).all()]}

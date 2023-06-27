@@ -40,11 +40,14 @@ async def root():
 
 @app.get("/ord-coordinate-api/coordinates-info", response_model=schemas.CoordinatesInfoResponse)
 async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
+                               coordinate: Union[str, None] = Query(default=None),
                                db: Session = Depends(get_db),
                                page: Union[int, None] = Query(default=0),
                                limit: Union[int, None] = Query(default=100)):
     if sats:
         sat_data = crud.get_coordinates_info_by_sats(db=db, sats=sats)
+    elif coordinate:
+        sat_data = crud.get_coordinates_info_by_coordinate(db=db, coordinate=coordinate)
     else:
         sat_data = crud.get_all_coordinates_info(db=db, offset=page * limit, limit=limit)
     total_data_list = sat_data.get('data')
