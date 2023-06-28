@@ -36,6 +36,15 @@ def get_db():
         db.close()
 
 
+@app.get("/ord-coordinate-api")
+async def root():
+    '''
+    root api
+    :return:
+    '''
+    return {"message": "welcome to use ord-coordinate-api"}
+
+
 @app.get("/ord-coordinate-api/coordinates-info", response_model=schemas.CoordinatesInfoResponse)
 async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
                                coordinate: Union[str, None] = Query(default=None),
@@ -62,7 +71,7 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
     }
 
 
-@app.post("/ord-coordinate-api/calculate_text", response_model=schemas.CalculateTextResponse)
+@app.post("/ord-coordinate-api/calculate-text", response_model=schemas.CalculateTextResponse)
 async def calculate_text(request: Request, item: schemas.CalculateTextPost):
     post_data = {
         "content": item.content,
