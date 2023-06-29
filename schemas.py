@@ -53,7 +53,7 @@ class CoordinatesInfoResponse(BaseModel):
         }
 
 
-class CalculateTextPost(BaseModel):
+class CalculateTextPostItem(BaseModel):
     content: str
     type: str
 
@@ -63,6 +63,20 @@ class CalculateTextPost(BaseModel):
                 "content": '{\n \"p\": \"brc-721\",\n \"op\": \"mint\",\n \"tick\":\"Bitcoin-Azuki\",\n \"id\": '
                            '\"8122165\",\n \"ipfs\":\"ipfs://QmZcH4YvBVVRJtdn4RdbaqgspFU8gH6P9vomDpBVpAL3u4\"\n}',
                 "type": "common-text",
+            }
+        }
+
+
+class CalculateTextPost(BaseModel):
+    data: List[CalculateTextPostItem]
+
+    class Config:
+        schema_extra = {
+            "example": {"data": [{
+                "content": '{\n \"p\": \"brc-721\",\n \"op\": \"mint\",\n \"tick\":\"Bitcoin-Azuki\",\n \"id\": '
+                           '\"8122165\",\n \"ipfs\":\"ipfs://QmZcH4YvBVVRJtdn4RdbaqgspFU8gH6P9vomDpBVpAL3u4\"\n}',
+                "type": "common-text",
+            }]
             }
         }
 
@@ -83,17 +97,17 @@ class CalculateTextResponseItem(BaseModel):
 class CalculateTextResponse(BaseModel):
     code: str
     msg: str
-    data: Union[CalculateTextResponseItem, None] = None
+    data: Union[List[CalculateTextResponseItem], None] = None
 
     class Config:
         schema_extra = {
             "example": {
                 "code": 0,
                 "msg": "ok",
-                "data": {
+                "data": [{
                     "fname": "6d06daac9e7e4e44ae4986beb613f36e.txt",
                     "fsize": 149,
-                }
+                }]
             }
         }
 

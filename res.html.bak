@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+    <base/>
+    <meta charset="UTF-8">
+    <meta type="imgage/text/"
+          protocol="ordinals-coordinate"
+          coordinate="(0,0)"
+          inscribtionId="13fc26dda45605be0527557399e33769f4dfca8a6ad039e8635aa3fe7fea7dedi0"
+          ticker=""
+          operation="mint"
+          version="1.0"
+          describtion="this is a first ordinals coordinate project!"
+          domain="001.btc">
+
+   <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #avatar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #avatar img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="coordinate" >
+
+</div>
+<script>
+    let xhr = new XMLHttpRequest()
+    xhr.open('get', 'https://ordinals.com/content/0784d8f7cb33919a622a82de9fa1972b735494da60d6f047a12e834a6935f935i0', true)
+    xhr.send()
+    xhr.onreadystatechange = function() {
+        console.log(xhr.responseText)
+        document.getElementById('coordinate').innerText=xhr.responseText;
+    }
+</script>
+<div id="avatar">
+<img src="https://ordinals.com/content/13fc26dda45605be0527557399e33769f4dfca8a6ad039e8635aa3fe7fea7dedi0" style="z-index:1" />
+<img src="https://ordinals.com/content/d1dd8c0587b52290e3df8f19b5b976d1af907109aca33483cc9ae038b6315972i0" style="z-index:2" />
+<img src="https://ordinals.com/content/12b5e01472b3971fdf99ed48b5ccf96bb58a56eb26db22926c6e76a23ca585dai0" style="z-index:3" />
+<img src="https://ordinals.com/content/7f4ca8a1dbdd4b14f2afdf5497228885498a9ec5a5f0468e9d4b8b4a0dc0563fi0" style="z-index:4" />
+<img src="https://ordinals.com/content/c71685f92b6f99e61f47b5a174db4fb1ad18b7a4710a1343832394b93218dcb1i0" style="z-index:5" />
+<img src="https://ordinals.com/content/75e8a02b91b09e1048e5e6976cd0b324e6d9f6b3e8dc8d3f51ef5d5de38de707i0" style="z-index:6" />
+<img src="https://ordinals.com/content/45cfcb16e38cd3a2f835aaa14aa6987dc247763b2a9992ba0bee4aed109d42dci0" style="z-index:7" />
+
+</div>
+</body>
+</html>
