@@ -72,7 +72,7 @@ class CalculateTextPost(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {"data": [{
+            "example": {[{
                 "content": '{\n \"p\": \"brc-721\",\n \"op\": \"mint\",\n \"tick\":\"Bitcoin-Azuki\",\n \"id\": '
                            '\"8122165\",\n \"ipfs\":\"ipfs://QmZcH4YvBVVRJtdn4RdbaqgspFU8gH6P9vomDpBVpAL3u4\"\n}',
                 "type": "common-text",
