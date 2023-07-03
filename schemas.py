@@ -83,12 +83,14 @@ class CalculateTextPost(BaseModel):
 
 
 class CalculateTextResponseItem(BaseModel):
+    coordinate:str
     fname: str
     fsize: int
 
     class Config:
         schema_extra = {
             "example": {
+                "coordinate":"(1,2)",
                 "fname": "6d06daac9e7e4e44ae4986beb613f36e.txt",
                 "fsize": 149,
             }

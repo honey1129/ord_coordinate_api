@@ -74,9 +74,9 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
 @app.post("/ord-coordinate-api/calculate-text", response_model=schemas.CalculateTextResponse)
 async def calculate_text(request: Request, item: schemas.CalculateTextPost):
     res_data_list = []
-    for i in item['data']:
+    for i in item.data:
         post_data = {
-            "content": i['content'],
+            "content": i.content,
             "type": "common-text"
         }
         res = requests.post("https://api.idclub.io/inscribe/calculateText", data=json.dumps(post_data),
@@ -85,6 +85,7 @@ async def calculate_text(request: Request, item: schemas.CalculateTextPost):
             res_json = res.json()
             if res_json.get('code') == 0 and res_json.get("msg") == "ok":
                 res_data_list.append( {
+                        "coordinate":i.content,
                         "fname": res_json.get("data").get("fname"),
                         "fsize": res_json.get("data").get("fsize")
                     })
