@@ -74,7 +74,7 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
 @app.post("/ord-coordinate-api/calculate-text", response_model=schemas.CalculateTextResponse)
 async def calculate_text(request: Request, item: schemas.CalculateTextPost):
     res_data_list = []
-    for i in item:
+    for i in item['data']:
         post_data = {
             "content": i['content'],
             "type": "common-text"
