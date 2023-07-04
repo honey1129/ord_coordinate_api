@@ -79,9 +79,10 @@ async def calculate_text(request: Request, item: schemas.CalculateTextPost):
             "content": i.content,
             "type": "common-text"
         }
+        print("jjj",post_data)
         res = requests.post("https://api.idclub.io/inscribe/calculateText", data=json.dumps(post_data),
                             headers={'Content-Type': 'application/json'})
-        print(res.text)
+        print("ddd",res.text)
         if res.status_code == 200 and res:
             res_json = res.json()
             if res_json.get('code') == 0 and res_json.get("msg") == "ok":
