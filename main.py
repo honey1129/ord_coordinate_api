@@ -171,6 +171,7 @@ async def get_valid_coordinates(request: Request,
     all_coordinates_data_list = crud.get_all_coordinates_info_no_limit(db=db)
     for i in all_coordinates_data_list['data']:
         a = i['Coordinates'][1:-1].split(',')
+        print(a)
         i['Coordinates'] = str(tuple([int(x) for x in a]))
         all_db_coordinates_str.append(i['Coordinates'])
     all_none_coordinates_data_list = utils.array_diff(all_coordinates_str, all_db_coordinates_str)
