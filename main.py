@@ -178,7 +178,7 @@ async def get_valid_coordinates(request: Request,
         else:
             all_db_coordinates_str.append(i['Coordinates'])
     all_none_coordinates_data_list = utils.array_diff(all_coordinates_str, all_db_coordinates_str)
-    valid_coordinate_response_list = [{"valid_coordinate": x} for x in all_none_coordinates_data_list]
+    valid_coordinate_response_list = [{"valid_coordinate": x.replace(' ', '')} for x in all_none_coordinates_data_list]
     return {
         "code": 0,
         "msg": "ok",
