@@ -164,7 +164,7 @@ async def get_valid_coordinates(request: Request,
     all_coordinates_str = []
     for i in range(coordinate_x_min, coordinate_x_max + 1):
         for y in range(coordinate_y_min, coordinate_y_max + 1):
-            coordinate = (i, y)
+            coordinate = (i,y)
             coordinate_str = str(tuple(coordinate))
             all_coordinates_str.append(coordinate_str)
     all_db_coordinates_str = []
