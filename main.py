@@ -1,4 +1,6 @@
 import json
+import asyncio
+from aiohttp import ClientSession
 from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Query, Depends, HTTPException, Request
@@ -34,6 +36,8 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
 
 
 @app.get("/ord-coordinate-api")
@@ -74,29 +78,23 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
 @app.post("/ord-coordinate-api/calculate-text", response_model=schemas.CalculateTextResponse)
 async def calculate_text(request: Request, item: schemas.CalculateTextPost):
     res_data_list = []
-    for i in item.data:
-        post_data = {
-            "content": i.content,
-            "type": "common-text"
-        }
-        print("jjj",post_data)
-        res = requests.post("https://api.idclub.io/inscribe/calculateText", data=json.dumps(post_data),
-                            headers={'Content-Type': 'application/json'})
-        print("ddd",res.text)
-        if res.status_code == 200 and res:
-            res_json = res.json()
-            if res_json.get('code') == 0 and res_json.get("msg") == "ok":
-                res_data_list.append( {
-                        "coordinate":i.content,
-                        "fname": res_json.get("data").get("fname"),
-                        "fsize": res_json.get("data").get("fsize")
-                    })
+    post_data = {"contentList": [i.content for i in item.data]}
+    res = requests.post("https://api.idclub.io/inscribe/calculateBatch", data=json.dumps(post_data),headers={'Content-Type': 'application/json'})
+    if res.status_code == 200 and res:
+        res_json = res.json()
+        if res_json.get('code') == 0 and res_json.get("msg") == "ok":
+            res_data_list.append({
+                # "coordinate": i.content,
+                "fname": res_json.get("data").get("fname"),
+                "fsize": res_json.get("data").get("fsize")
+            })
 
     return {
         "code": 0,
         "msg": "ok",
         "data": res_data_list
     }
+
 
 # else:
 #     return {
@@ -164,7 +162,7 @@ async def get_valid_coordinates(request: Request,
     all_coordinates_str = []
     for i in range(coordinate_x_min, coordinate_x_max + 1):
         for y in range(coordinate_y_min, coordinate_y_max + 1):
-            coordinate = (i,y)
+            coordinate = (i, y)
             coordinate_str = str(tuple(coordinate))
             all_coordinates_str.append(coordinate_str)
     all_db_coordinates_str = []

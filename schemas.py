@@ -81,7 +81,7 @@ class CalculateTextPost(BaseModel):
 
 
 class CalculateTextResponseItem(BaseModel):
-    coordinate:str
+    coordinate:Union[str,None] = None
     fname: str
     fsize: int
 
