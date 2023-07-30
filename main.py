@@ -77,31 +77,37 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
 
 @app.post("/ord-coordinate-api/calculate-text", response_model=schemas.CalculateTextResponse)
 async def calculate_text(request: Request, item: schemas.CalculateTextPost):
-    res_data_list = []
+    # res_data_list = []
     post_data = {"contentList": [i.content for i in item.data]}
     res = requests.post("https://api.idclub.io/inscribe/calculateBatch", data=json.dumps(post_data),headers={'Content-Type': 'application/json'})
     if res.status_code == 200 and res:
         res_json = res.json()
         if res_json.get('code') == 0 and res_json.get("msg") == "ok":
-            res_data_list.append({
-                # "coordinate": i.content,
-                "fname": res_json.get("data").get("fname"),
-                "fsize": res_json.get("data").get("fsize")
-            })
+            # res_data_list.append({
+            #     # "coordinate": i.content,
+            #     "fname": res_json.get("data").get("fname"),
+            #     "fsize": res_json.get("data").get("fsize")
+            # })
 
-    return {
-        "code": 0,
-        "msg": "ok",
-        "data": res_data_list
-    }
+            return {
+                "code": 0,
+                "msg": "ok",
+                "data": res_json.get('data')
+            }
 
 
-# else:
-#     return {
-#         "code": 500,
-#         "msg": "error",
-#         "data": None
-#     }
+        else:
+            return {
+                "code": 500,
+                "msg": "error",
+                "data": None
+            }
+    else:
+        return {
+            "code": 500,
+            "msg": "error",
+            "data": None
+        }
 
 
 @app.post("/ord-coordinate-api/create-order", response_model=schemas.CreateOrderResponse)
