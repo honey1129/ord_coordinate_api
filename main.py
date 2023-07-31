@@ -66,7 +66,10 @@ async def get_coordinates_info(sats: Union[int, None] = Query(default=None),
         raise HTTPException(status_code=404, detail="Coordinates Data Not Found!")
     for i in total_data_list:
         a = i['Coordinates'][1:-1].split(',')
-        i['Coordinates'] = str(tuple([int(x) for x in a]))
+        try:
+            i['Coordinates'] = str(tuple([int(x) for x in a]))
+        except:
+            continue
     return {
         "massage": "Get Coordinates Datas Success!",
         "code": 200,
