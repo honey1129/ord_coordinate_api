@@ -178,7 +178,7 @@ async def get_valid_coordinates(request: Request,
             a = i['Coordinates'].strip()[1:-1].strip().split(',')
             i['Coordinates'] = str(tuple([int(x) for x in a]))
         except:
-            pass
+            continue
         else:
             all_db_coordinates_str.append(i['Coordinates'])
     all_none_coordinates_data_list = utils.array_diff(all_coordinates_str, all_db_coordinates_str)
