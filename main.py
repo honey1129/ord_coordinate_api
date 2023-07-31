@@ -173,9 +173,11 @@ async def get_valid_coordinates(request: Request,
             all_coordinates_str.append(coordinate_str)
     all_db_coordinates_str = []
     all_coordinates_data_list = crud.get_all_coordinates_info_no_limit(db=db)
+
     for i in all_coordinates_data_list['data']:
+        a = i['Coordinates'].strip()[1:-1].strip().split(',')
+            # a = i['Coordinates'].strip()[1:-1].strip().split(',')
         try:
-            a = i['Coordinates'].strip()[1:-1].strip().split(',')
             i['Coordinates'] = str(tuple([int(x) for x in a]))
         except:
             continue
